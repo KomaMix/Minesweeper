@@ -14,13 +14,13 @@ namespace Minesweeper.Repositories
             _gamesStorage.Add(game.Id, game);
         }
 
-        public Game GetGame(Game game)
+        public Game GetGame(Guid gameId)
         {
-            if (!_gamesStorage.ContainsKey(game.Id))
+            if (!_gamesStorage.ContainsKey(gameId))
             {
                 throw new InvalidOperationException("Нет игры с таким Id!");
             }
-            return _gamesStorage[game.Id];
+            return _gamesStorage[gameId];
         }
 
         public void UpdateGame(Game game)
