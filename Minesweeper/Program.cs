@@ -1,6 +1,26 @@
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+
+    // Не забудь потом убрать!!!!!!!!!!!!!!!!!!!
+    app.UseDeveloperExceptionPage();
+}
+
+
+app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();
+
