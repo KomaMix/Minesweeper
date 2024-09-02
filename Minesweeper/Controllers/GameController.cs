@@ -6,7 +6,7 @@ using Minesweeper.Services;
 
 namespace Minesweeper.Controllers
 {
-    [Route("api")]
+    [Route("api/[controller]")]
     [ApiController]
     public class GameController : ControllerBase
     {
@@ -22,15 +22,19 @@ namespace Minesweeper.Controllers
         [HttpPost("new")]
         public ActionResult<GameStateDto> CreateGame([FromBody] CreateGameDto createDto)
         {
-            if (createDto.Width <= 0 || createDto.Height <= 0 || createDto.MinesCount <= 0)
+            if (createDto.Width < 2 || createDto.Width > 30)
             {
-                return BadRequest("Введены отрицательные параметры!");
+                return BadRequest(new { error = "ширина поля должна быть не менее 2 и не более 30" });
             }
 
-            if (createDto.Width > 30 || createDto.Height > 30 
-                || createDto.MinesCount > createDto.Width * createDto.Height - 1)
+            if (createDto.Height < 2 || createDto.Height > 30)
             {
-                return BadRequest("Параметры не соответсвуют правилам игры!");
+                return BadRequest(new { error = "высота поля должна быть не менее 2 и не более 30" });
+            }
+
+            if (createDto.MinesCount < 1 || createDto.MinesCount > 24)
+            {
+                return BadRequest(new { error = "количество мин должно быть не менее 1 и не более 24" });
             }
 
             var gameState = _gameService.CreateGame(createDto.Width, createDto.Height, createDto.MinesCount);
