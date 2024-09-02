@@ -111,7 +111,7 @@ namespace Minesweeper.Services
                 Height = game.Height,
                 MinesCount = game.MinesCount,
                 Field = game.Field,
-                IsCompleted = game.IsCompleted
+                Completed = game.IsCompleted
             };
         }
 
