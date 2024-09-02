@@ -7,14 +7,14 @@ using Minesweeper.Services;
 
 namespace Minesweeper.Controllers
 {
-    [Route("api/[controller]")]
+    // Контроллер api обработки запросов игры Minesweeper
+    [Route("api")]
     [ProducesResponseType(typeof(GameInfoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ApiController]
     public class GameController : ControllerBase
     {
         private readonly IGameService _gameService;
-
         
         public GameController(IGameService gameService)
         {
@@ -52,7 +52,7 @@ namespace Minesweeper.Controllers
                 var gameState = _gameService.MakeMove(move.GameId, move.Row, move.Col);
                 return Ok(gameState);
             }
-            catch (Exception ex)
+            catch (Exception ex) // Все исключения обрабатываются здесь, но можно поменять
             {
                 return BadRequest(new ErrorResponse { Error = ex.Message });
             }

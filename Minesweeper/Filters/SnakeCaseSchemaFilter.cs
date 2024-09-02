@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Minesweeper.Filters
 {
+    // Фильтр для преобразования стиля CamelCase в SnakeCase
     public class SnakeCaseSchemaFilter : ISchemaFilter
     {
         public void Apply(OpenApiSchema schema, SchemaFilterContext context)

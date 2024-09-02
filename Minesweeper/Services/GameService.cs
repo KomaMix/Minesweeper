@@ -23,11 +23,16 @@ namespace Minesweeper.Services
                 Mines = new bool[width, height]
             };
 
+            // Начальное заполнение поля пустыми символами
             InitializeField(game);
+
+            // Рандомное расположение мин
             PlaceMines(game);
 
+            // Сохранение конфигурации игры в репозитории
             _gameRepository.CreateGame(game);
 
+            // Преобразование объекта Game для отправки к клиенту
             return MapToDto(game);
         }
 
@@ -49,30 +54,43 @@ namespace Minesweeper.Services
             if (game.Mines[row, col])
             {
                 // Игрок попал на мину, игра завершена
+
+                // Нужно открыть все оставшиеся мины и клетки
                 LoseRevealRemainingCels(game);
+
                 game.IsCompleted = true;
             } else
             {
+                // Количество мин рядом с этой клеткой
                 int minesAround = CountMinesAround(game, row, col);
 
+                // Присваиваем текущей клетке количество мин
                 game.Field[row, col] = minesAround.ToString()[0];
 
+                // Открываем все клетки рядом с нулевой
                 if (minesAround == 0)
                 {
                     OpeningAdjacentCells(game, row, col);
                 }
 
+                // Проверка выигрыша
                 if (CheckWinCondition(game))
                 {
                     game.IsCompleted = true;
+
+                    // При выигрыше тоже требуется открыть все клетки, но немного в другом формате
                     WinRevealRemainingCels(game);
                 }
             }
 
+            // Обновляем состояние игры в репозитории
             _gameRepository.UpdateGame(game);
+
+            // Возвращаем состояние игры
             return MapToDto(game);
         }
 
+        // Начальная инициализация карты пустыми символами
         private void InitializeField(Game game)
         {
             for (int i = 0; i < game.Width; i++)
@@ -84,6 +102,7 @@ namespace Minesweeper.Services
             }
         }
 
+        // Установка мин
         private void PlaceMines(Game game)
         {
             var random = new Random();
@@ -102,6 +121,9 @@ namespace Minesweeper.Services
             }
         }
 
+        // Преобразование состояния игры
+        // Расположение мин ни в коем случае нельзя раскрывать
+        // Поэтому мы не можем возвратить объект Game
         private GameInfoResponse MapToDto(Game game)
         {
             return new GameInfoResponse
@@ -115,20 +137,7 @@ namespace Minesweeper.Services
             };
         }
 
-        private void RevealMines(Game game)
-        {
-            for (int i = 0; i < game.Width; i++)
-            {
-                for (int j = 0; j < game.Height; j++)
-                {
-                    if (game.Mines[i, j])
-                    {
-                        game.Field[i, j] = 'X';
-                    }
-                }
-            }
-        }
-
+        // Количество мин рядом с этой клеткой
         private int CountMinesAround(Game game, int row, int col)
         {
             int cntMinesAround = 0;
@@ -156,6 +165,7 @@ namespace Minesweeper.Services
             return cntMinesAround;
         }
 
+        // Открываем все клетки рядом с нулевой
         private void OpeningAdjacentCells(Game game, int row, int col)
         {
             for (int i = -1; i <= 1; i++)
@@ -177,6 +187,7 @@ namespace Minesweeper.Services
             }
         }
 
+        // Проверка выигрыша
         private bool CheckWinCondition(Game game)
         {
             for (int i = 0; i < game.Height; i++)
@@ -192,6 +203,7 @@ namespace Minesweeper.Services
             return true;
         }
 
+        // Преобразуем карту на случай выигрыша
         private void WinRevealRemainingCels(Game game)
         {
             for (int i = 0; i < game.Height; i++)
@@ -206,6 +218,7 @@ namespace Minesweeper.Services
             }
         }
 
+        // Преобразуем карту на случай проигрыша
         private void LoseRevealRemainingCels(Game game)
         {
             for (int i = 0; i < game.Height; i++)

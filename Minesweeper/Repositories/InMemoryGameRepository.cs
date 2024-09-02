@@ -2,6 +2,7 @@
 
 namespace Minesweeper.Repositories
 {
+    // Репозиторий для хранения состояния игры
     public class InMemoryGameRepository : IGameRepository
     {
         private readonly Dictionary<Guid, Game> _gamesStorage = new Dictionary<Guid, Game>();
