@@ -48,12 +48,26 @@ if (app.Environment.IsDevelopment())
 }
 
 
+// Добавление редиректа с корневого URL на Swagger UI
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/swagger");
+    }
+    else
+    {
+        await next();
+    }
+});
+
 app.UseHttpsRedirection();
 
 // Разрешение
 app.UseCors("AllowSpecificOrigin");
 
 app.MapControllers();
+
 
 app.Run();
 
