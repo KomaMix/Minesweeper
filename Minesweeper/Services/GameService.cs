@@ -49,7 +49,7 @@ namespace Minesweeper.Services
             if (game.Mines[row, col])
             {
                 // Игрок попал на мину, игра завершена
-                RevealMines(game);
+                LoseRevealRemainingCels(game);
                 game.IsCompleted = true;
             } else
             {
@@ -65,7 +65,7 @@ namespace Minesweeper.Services
                 if (CheckWinCondition(game))
                 {
                     game.IsCompleted = true;
-                    RevealRemainingMines(game);
+                    WinRevealRemainingCels(game);
                 }
             }
 
@@ -140,12 +140,16 @@ namespace Minesweeper.Services
                     int newRow = row + i;
                     int newCol = col + j;
 
-                    if (newRow > -1 && newCol > -1 
-                        && newRow < game.Width && newCol < game.Height
-                        && game.Mines[newCol, newCol])
+                    if (newRow != row || newCol != col)
                     {
-                        cntMinesAround++;
+                        if (newRow > -1 && newCol > -1
+                        && newRow < game.Width && newCol < game.Height
+                        && game.Mines[newRow, newCol])
+                        {
+                            cntMinesAround++;
+                        }
                     }
+                    
                 }
             }
 
@@ -161,10 +165,14 @@ namespace Minesweeper.Services
                     int newRow = row + i;
                     int newCol = col + j;
 
-                    if (newRow >= 0 && newRow < game.Height && newCol >= 0 && newCol < game.Width && game.Field[newRow, newCol] == ' ')
+                    if (newRow != row || newCol != col)
                     {
-                        MakeMove(game.Id, newRow, newCol);
+                        if (newRow >= 0 && newRow < game.Height && newCol >= 0 && newCol < game.Width && game.Field[newRow, newCol] == ' ')
+                        {
+                            MakeMove(game.Id, newRow, newCol);
+                        }
                     }
+                    
                 }
             }
         }
@@ -184,7 +192,7 @@ namespace Minesweeper.Services
             return true;
         }
 
-        private void RevealRemainingMines(Game game)
+        private void WinRevealRemainingCels(Game game)
         {
             for (int i = 0; i < game.Height; i++)
             {
@@ -197,5 +205,27 @@ namespace Minesweeper.Services
                 }
             }
         }
+
+        private void LoseRevealRemainingCels(Game game)
+        {
+            for (int i = 0; i < game.Height; i++)
+            {
+                for (int j = 0; j < game.Width; j++)
+                {
+                    if (game.Mines[i, j])
+                    {
+                        game.Field[i, j] = 'X';
+                    } else if (game.Field[i, j] == ' ')
+                    {
+                        int minesAround = CountMinesAround(game, i, j);
+
+                        game.Field[i, j] = minesAround.ToString()[0];
+                    }
+                    
+                }
+            }
+        }
+
+
     }
 }
