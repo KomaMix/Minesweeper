@@ -4,7 +4,7 @@ namespace Minesweeper.Services
 {
     public interface IGameService
     {
-        GameStateDto CreateGame(int width, int height, int minesCount);
-        GameStateDto MakeMove(Guid gameId, int row, int col);
+        GameInfoResponse CreateGame(int width, int height, int minesCount);
+        GameInfoResponse MakeMove(Guid gameId, int row, int col);
     }
 }

@@ -20,7 +20,7 @@ namespace Minesweeper.Controllers
 
 
         [HttpPost("new")]
-        public ActionResult<GameStateDto> CreateGame([FromBody] CreateGameDto createDto)
+        public ActionResult<GameInfoResponse> CreateGame([FromBody] NewGameRequest createDto)
         {
             if (createDto.Width < 2 || createDto.Width > 30)
             {
@@ -42,7 +42,7 @@ namespace Minesweeper.Controllers
         }
         
         [HttpGet("turn")]
-        public ActionResult<GameStateDto> Turn(Guid gameId, [FromBody] GameMoveDto move)
+        public ActionResult<GameInfoResponse> Turn([FromBody] GameTurnRequest move)
         {
             try
             {

@@ -12,7 +12,7 @@ namespace Minesweeper.Services
             _gameRepository = gameRepository;
         }
 
-        public GameStateDto CreateGame(int width, int height, int minesCount)
+        public GameInfoResponse CreateGame(int width, int height, int minesCount)
         {
             var game = new Game
             {
@@ -31,7 +31,7 @@ namespace Minesweeper.Services
             return MapToDto(game);
         }
 
-        public GameStateDto MakeMove(Guid gameId, int row, int col)
+        public GameInfoResponse MakeMove(Guid gameId, int row, int col)
         {
             // Если в репозитории нет игры, то выбросится исключение
             var game = _gameRepository.GetGame(gameId);
@@ -102,9 +102,9 @@ namespace Minesweeper.Services
             }
         }
 
-        private GameStateDto MapToDto(Game game)
+        private GameInfoResponse MapToDto(Game game)
         {
-            return new GameStateDto
+            return new GameInfoResponse
             {
                 GameId = game.Id,
                 Width = game.Width,

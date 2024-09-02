@@ -2,12 +2,19 @@
 
 namespace Minesweeper.DTOs
 {
-    public class CreateGameDto
+    public class GameInfoResponse
     {
+        [JsonProperty("game_id")]
+        public Guid GameId { get; set; }
+
         public int Width { get; set; }
         public int Height { get; set; }
 
         [JsonProperty("mines_count")]
         public int MinesCount { get; set; }
+
+        [JsonProperty("field")]
+        public char[,] Field { get; set; }
+        public bool Completed { get; set; }
     }
 }
