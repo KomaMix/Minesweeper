@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Minesweeper.Services;
 
 namespace Minesweeper.Controllers
 {
@@ -7,8 +8,16 @@ namespace Minesweeper.Controllers
     [ApiController]
     public class GameController : ControllerBase
     {
+        private readonly IGameService _gameService;
+
+        public GameController(IGameService gameService)
+        {
+            _gameService = gameService;
+        }
+
+
         [HttpGet("new")]
-        public int New()
+        public int CreateGame()
         {
             return 2;
         }
