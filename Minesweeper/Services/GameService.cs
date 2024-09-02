@@ -59,9 +59,18 @@ namespace Minesweeper.Services
 
                 if (minesAround == 0)
                 {
-                    RevealAdjacentCells(game, row, col);
+                    OpeningAdjacentCells(game, row, col);
+                }
+
+                if (CheckWinCondition(game))
+                {
+                    game.IsCompleted = true;
+                    RevealRemainingMines(game);
                 }
             }
+
+            _gameRepository.UpdateGame(game);
+            return MapToDto(game);
         }
 
         private void InitializeField(Game game)
@@ -128,12 +137,12 @@ namespace Minesweeper.Services
             {
                 for (int j = -1; j < 2; j++)
                 {
-                    int new_row = row + i;
-                    int new_col = col + j;
+                    int newRow = row + i;
+                    int newCol = col + j;
 
-                    if (new_row > -1 && new_col > -1 
-                        && new_row < game.Width && new_col < game.Height
-                        && game.Mines[new_row, new_col])
+                    if (newRow > -1 && newCol > -1 
+                        && newRow < game.Width && newCol < game.Height
+                        && game.Mines[newCol, newCol])
                     {
                         cntMinesAround++;
                     }
@@ -143,9 +152,50 @@ namespace Minesweeper.Services
             return cntMinesAround;
         }
 
-        private void OpeningAdjacentCells(game, row, col)
+        private void OpeningAdjacentCells(Game game, int row, int col)
         {
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    int newRow = row + i;
+                    int newCol = col + j;
 
+                    if (newRow >= 0 && newRow < game.Height && newCol >= 0 && newCol < game.Width && game.Field[newRow, newCol] == ' ')
+                    {
+                        MakeMove(game.Id, newRow, newCol);
+                    }
+                }
+            }
+        }
+
+        private bool CheckWinCondition(Game game)
+        {
+            for (int i = 0; i < game.Height; i++)
+            {
+                for (int j = 0; j < game.Width; j++)
+                {
+                    if (game.Field[i, j] == ' ' && !game.Mines[i, j])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private void RevealRemainingMines(Game game)
+        {
+            for (int i = 0; i < game.Height; i++)
+            {
+                for (int j = 0; j < game.Width; j++)
+                {
+                    if (game.Mines[i, j] && game.Field[i, j] == ' ')
+                    {
+                        game.Field[i, j] = 'M';
+                    }
+                }
+            }
         }
     }
 }
